@@ -13,7 +13,27 @@ const auth = require('./middleware/auth');
 const app = express();
 const upload = multer({ 
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit for videos
+  fileFilter: (req, file, cb) => {
+    // Accept images and all video formats
+    const allowedImageTypes = /jpeg|jpg|png|gif|webp|bmp|svg/;
+    const allowedVideoTypes = /mp4|mkv|avi|mov|wmv|flv|webm|mpeg|mpg|3gp|m4v/;
+    
+    const mimetype = file.mimetype.toLowerCase();
+    const extname = file.originalname.toLowerCase().split('.').pop();
+    
+    const isImage = mimetype.startsWith('image/') || allowedImageTypes.test(extname);
+    const isVideo = mimetype.startsWith('video/') || 
+                    mimetype.includes('matroska') || // for MKV
+                    mimetype.includes('x-matroska') || 
+                    allowedVideoTypes.test(extname);
+    
+    if (isImage || isVideo) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image and video files are allowed!'), false);
+    }
+  }
 });
 
 app.use(cors());
