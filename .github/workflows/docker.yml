@@ -28,11 +28,11 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/23f200398/fsd-backend:latest
+          tags: ghcr.io/${{ github.repository_owner }}/fsd-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/23f200398/fsd-frontend:latest
+          tags: ghcr.io/${{ github.repository_owner }}/fsd-frontend:latest
